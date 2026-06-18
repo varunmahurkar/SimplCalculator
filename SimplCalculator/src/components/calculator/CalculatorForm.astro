@@ -1,0 +1,92 @@
+---
+import type { CalculatorDefinition } from "../../types/calculator";
+
+export interface Props {
+  def: CalculatorDefinition<any>;
+}
+const { def } = Astro.props;
+---
+
+<form data-calc-form class="grid gap-5" novalidate>
+  {
+    def.fields.map((f) => (
+      <div class="grid gap-1.5">
+        <div class="flex items-baseline justify-between">
+          <label for={`f-${f.name}`} class="text-body-sm-strong font-medium text-ink">
+            {f.label}
+          </label>
+          {f.type === "slider" && (
+            <span class="font-mono text-body-sm text-body">
+              <span data-range-value={f.name}>{String(f.default)}</span>
+              {f.unit ? ` ${f.unit}` : ""}
+            </span>
+          )}
+        </div>
+
+        {f.type === "select" ? (
+          <select
+            id={`f-${f.name}`}
+            name={f.name}
+            class="h-10 rounded-sm border border-hairline bg-canvas px-3 text-body-sm text-ink outline-none focus:border-hairline-strong focus-visible:ring-2 focus-visible:ring-link"
+          >
+            {(f.options ?? []).map((o) => (
+              <option value={o.value} selected={o.value === f.default}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+        ) : f.type === "slider" ? (
+          <input
+            id={`f-${f.name}`}
+            name={f.name}
+            type="range"
+            min={f.min}
+            max={f.max}
+            step={f.step}
+            value={Number(f.default)}
+            class="h-2 w-full cursor-pointer appearance-none rounded-full bg-canvas-soft-2 accent-link"
+          />
+        ) : f.type === "date" ? (
+          <input
+            id={`f-${f.name}`}
+            name={f.name}
+            type="date"
+            value={String(f.default)}
+            class="h-10 rounded-sm border border-hairline bg-canvas px-3 text-body-sm text-ink outline-none focus:border-hairline-strong focus-visible:ring-2 focus-visible:ring-link"
+          />
+        ) : f.type === "text" ? (
+          <input
+            id={`f-${f.name}`}
+            name={f.name}
+            type="text"
+            value={String(f.default)}
+            autocomplete="off"
+            class="h-10 rounded-sm border border-hairline bg-canvas px-3 text-body-sm text-ink outline-none focus:border-hairline-strong focus-visible:ring-2 focus-visible:ring-link"
+          />
+        ) : (
+          <div class="flex items-center rounded-sm border border-hairline bg-canvas focus-within:border-hairline-strong">
+            {f.unit && f.type === "currency" && (
+              <span class="pl-3 text-body-sm text-mute">{f.unit}</span>
+            )}
+            <input
+              id={`f-${f.name}`}
+              name={f.name}
+              type="number"
+              inputmode="decimal"
+              min={f.min}
+              max={f.max}
+              step={f.step}
+              value={Number(f.default)}
+              class="h-10 w-full bg-transparent px-3 text-body-sm text-ink outline-none"
+            />
+            {f.unit && f.type !== "currency" && (
+              <span class="pr-3 text-body-sm text-mute">{f.unit}</span>
+            )}
+          </div>
+        )}
+
+        {f.help && <p class="text-caption text-body">{f.help}</p>}
+      </div>
+    ))
+  }
+</form>
