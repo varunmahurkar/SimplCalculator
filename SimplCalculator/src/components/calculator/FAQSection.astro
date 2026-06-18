@@ -1,0 +1,36 @@
+---
+export interface Props {
+  faq: { q: string; a: string }[];
+}
+const { faq } = Astro.props;
+if (!faq.length) return null;
+---
+
+<section id="faq" class="scroll-mt-20">
+  <h2 class="text-display-sm text-ink">Frequently asked questions</h2>
+  <div class="mt-4 divide-y divide-hairline overflow-hidden rounded-lg border border-hairline bg-canvas shadow-e2">
+    {
+      faq.map((f) => (
+        <details class="group">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 px-5 py-4 text-body-md-strong font-medium text-ink list-none [&::-webkit-details-marker]:hidden">
+            {f.q}
+            <svg
+              class="shrink-0 text-mute transition-transform group-open:rotate-45"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+          </summary>
+          <p class="px-5 pb-4 text-body-md text-body">{f.a}</p>
+        </details>
+      ))
+    }
+  </div>
+</section>
