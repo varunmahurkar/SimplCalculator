@@ -1,0 +1,33 @@
+---
+export interface Props {
+  formula: {
+    expression: string;
+    explanation: string;
+    terms: { symbol: string; meaning: string }[];
+  };
+}
+const { formula } = Astro.props;
+---
+
+<section id="formula" class="scroll-mt-20">
+  <h2 class="text-display-sm text-ink">Formula</h2>
+  <div class="mt-4 rounded-lg border border-hairline bg-canvas p-6 shadow-e2">
+    <code
+      class="block overflow-x-auto rounded-md bg-primary px-4 py-3 font-mono text-code text-on-primary"
+      >{formula.expression}</code
+    >
+    <p class="mt-4 text-body-md text-body">{formula.explanation}</p>
+    {
+      formula.terms.length > 0 && (
+        <dl class="mt-4 grid gap-2 sm:grid-cols-2">
+          {formula.terms.map((t) => (
+            <div class="flex gap-3 rounded-md bg-canvas-soft px-3 py-2">
+              <dt class="font-mono text-code font-medium text-ink">{t.symbol}</dt>
+              <dd class="text-body-sm text-body">{t.meaning}</dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
+  </div>
+</section>
