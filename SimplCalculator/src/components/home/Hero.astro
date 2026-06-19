@@ -1,0 +1,75 @@
+---
+import Icon from "../ui/Icon.astro";
+import { calculators } from "../../lib/calculators/registry";
+import { categories } from "../../data/categories";
+
+const stats = [
+  { value: `${calculators.length}`, label: "calculators" },
+  { value: `${categories.length}`, label: "categories" },
+  { value: "AI", label: "insights built in" },
+];
+---
+
+<section class="relative overflow-hidden border-b border-hairline">
+  <!-- Mesh gradient backdrop — hero scale only -->
+  <div
+    class="mesh-gradient pointer-events-none absolute inset-x-0 top-0 h-[420px] opacity-[0.18] blur-2xl"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="relative mx-auto max-w-[1400px] px-4 py-24 text-center md:px-6 md:py-32">
+    <span
+      class="inline-flex items-center gap-2 rounded-full border border-hairline bg-canvas/70 px-3 py-1 font-mono text-caption text-body backdrop-blur"
+    >
+      <span class="h-1.5 w-1.5 rounded-full bg-cyan-deep"></span>
+      The AI-powered calculation platform
+    </span>
+
+    <h1 class="mx-auto mt-6 max-w-4xl text-display-xl md:text-[64px] md:leading-[1.02] md:tracking-[-3px]">
+      Calculators that explain results.
+    </h1>
+    <p class="mx-auto mt-5 max-w-2xl text-body-lg text-body">
+      Don't just get a number. Calculate, visualize, understand, and decide —
+      with interactive charts, scenario comparisons, and AI insights on every result.
+    </p>
+
+    <!-- Search trigger -->
+    <button
+      data-search-open
+      class="group mx-auto mt-8 flex w-full max-w-xl items-center gap-3 rounded-pill border border-hairline bg-canvas px-5 py-3.5 text-left shadow-e3 transition-shadow hover:shadow-e4"
+      aria-label="Search calculators"
+    >
+      <Icon path="M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.3-4.3" size={18} class="text-mute" />
+      <span class="flex-1 text-body-md text-mute">Search 1,000+ calculators…</span>
+      <kbd class="rounded border border-hairline bg-canvas-soft px-2 py-0.5 font-mono text-caption text-mute">⌘K</kbd>
+    </button>
+
+    <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+      <a
+        href="/calculators"
+        class="inline-flex h-12 items-center gap-2 rounded-pill bg-primary px-6 text-button-lg font-medium text-on-primary hover:opacity-90"
+      >
+        Explore calculators
+      </a>
+      <button
+        data-assistant-open
+        class="inline-flex h-12 items-center gap-2 rounded-pill border border-hairline bg-canvas px-6 text-button-lg font-medium text-ink hover:bg-canvas-soft-2"
+      >
+        <Icon path="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z" size={16} />
+        Ask the AI
+      </button>
+    </div>
+
+    <dl class="mt-12 flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+      {
+        stats.map((s) => (
+          <div class="text-center">
+            <dt class="text-display-md text-ink">{s.value}</dt>
+            <dd class="font-mono text-caption uppercase tracking-wide text-mute">{s.label}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
