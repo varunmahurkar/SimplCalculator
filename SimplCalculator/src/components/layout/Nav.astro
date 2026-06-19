@@ -1,0 +1,203 @@
+---
+import Brand from "./Brand.astro";
+import Button from "../ui/Button.astro";
+import Icon from "../ui/Icon.astro";
+import AssistantPanel from "../ai/AssistantPanel.astro";
+import SearchCommand from "../ai/SearchCommand.astro";
+import CurrencySelect from "../ui/CurrencySelect.astro";
+import AuthModal from "../ai/AuthModal.astro";
+import { authEnabled } from "../../lib/supabase";
+import { categories } from "../../data/categories";
+
+const navCats = categories.slice(0, 6);
+const showAuth = authEnabled();
+---
+
+<header
+  class="sticky top-0 z-40 h-16 border-b border-hairline bg-canvas/85 backdrop-blur-md"
+>
+  <nav
+    class="mx-auto flex h-full max-w-[1400px] items-center justify-between gap-4 px-4 md:px-6"
+    aria-label="Primary"
+  >
+    <div class="flex items-center gap-6">
+      <Brand />
+      <div class="hidden items-center gap-1 lg:flex">
+        <a
+          href="/calculators"
+          class="rounded-full px-3 py-1.5 text-body-sm text-body transition-colors hover:bg-canvas-soft-2 hover:text-ink"
+          >All calculators</a
+        >
+        {
+          navCats.slice(0, 4).map((c) => (
+            <a
+              href={`/categories/${c.slug}`}
+              class="rounded-full px-3 py-1.5 text-body-sm text-body transition-colors hover:bg-canvas-soft-2 hover:text-ink"
+            >
+              {c.name}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <!-- Search trigger -->
+      <button
+        type="button"
+        data-search-open
+        class="group hidden h-9 items-center gap-2 rounded-md border border-hairline bg-canvas px-3 text-body-sm text-mute transition-colors hover:border-hairline-strong sm:flex"
+        aria-label="Search calculators"
+      >
+        <Icon path="M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.3-4.3" size={16} />
+        <span class="pr-8">Search…</span>
+        <kbd
+          class="rounded border border-hairline bg-canvas-soft px-1.5 font-mono text-caption text-mute"
+          >⌘K</kbd
+        >
+      </button>
+
+      <!-- Mobile search icon -->
+      <button
+        type="button"
+        data-search-open
+        class="flex h-9 w-9 items-center justify-center rounded-md text-ink hover:bg-canvas-soft-2 sm:hidden"
+        aria-label="Search calculators"
+      >
+        <Icon path="M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.3-4.3" size={18} />
+      </button>
+
+      <!-- Ask AI -->
+      <button
+        type="button"
+        data-assistant-open
+        class="flex h-9 items-center gap-1.5 rounded-md border border-hairline bg-canvas px-3 text-body-sm font-medium text-ink transition-colors hover:bg-canvas-soft-2"
+      >
+        <Icon
+          path="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"
+          size={16}
+        />
+        <span class="hidden sm:inline">Ask AI</span>
+      </button>
+
+      <!-- Currency -->
+      <CurrencySelect compact class="hidden sm:inline-flex" />
+
+      {
+        showAuth && (
+          <div data-auth-zone class="relative">
+            {/* Signed-out: opens the sign-in modal */}
+            <button
+              type="button"
+              data-auth-open
+              data-auth-signedout
+              class="hidden h-9 items-center rounded-md border border-hairline bg-canvas px-3 text-body-sm font-medium text-ink hover:bg-canvas-soft-2 sm:inline-flex"
+            >
+              Sign in
+            </button>
+
+            {/* Signed-in: username chip → dropdown (no more click-to-logout) */}
+            <div data-auth-menu hidden>
+              <button
+                type="button"
+                data-auth-chip
+                data-auth-state
+                data-signed-in="0"
+                aria-haspopup="true"
+                aria-expanded="false"
+                class="inline-flex h-9 items-center gap-2 rounded-md border border-hairline bg-canvas pl-1.5 pr-2.5 text-body-sm font-medium text-ink hover:bg-canvas-soft-2"
+              >
+                <img data-auth-avatar alt="" width="22" height="22" class="h-[22px] w-[22px] rounded-full bg-canvas-soft object-cover" />
+                <span data-auth-name class="max-w-[10rem] truncate">Account</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+              </button>
+              <div
+                data-auth-menu-panel
+                hidden
+                class="absolute right-0 z-50 mt-1 w-48 overflow-hidden rounded-md border border-hairline bg-canvas p-1 shadow-e4"
+                role="menu"
+              >
+                <p data-auth-menu-email class="truncate px-3 py-1.5 text-caption text-mute" />
+                <a href="/account" role="menuitem" class="block rounded px-3 py-2 text-body-sm text-ink hover:bg-canvas-soft-2">Your account</a>
+                <button type="button" data-auth-signout role="menuitem" class="block w-full rounded px-3 py-2 text-left text-body-sm text-ink hover:bg-canvas-soft-2">Sign out</button>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      <!-- Theme toggle -->
+      <button
+        type="button"
+        data-theme-toggle
+        class="flex h-9 w-9 items-center justify-center rounded-md text-ink transition-colors hover:bg-canvas-soft-2"
+        aria-label="Toggle theme"
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"></svg>
+      </button>
+
+      <!-- Mobile menu -->
+      <button
+        type="button"
+        data-menu-open
+        class="flex h-9 w-9 items-center justify-center rounded-md text-ink hover:bg-canvas-soft-2 lg:hidden"
+        aria-label="Open menu"
+        aria-expanded="false"
+      >
+        <Icon path="M3 6h18M3 12h18M3 18h18" size={20} />
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile overlay menu -->
+  <div
+    data-menu-panel
+    hidden
+    class="border-t border-hairline bg-canvas px-4 py-4 lg:hidden"
+  >
+    <div class="flex flex-col gap-1">
+      <a href="/calculators" class="rounded-md px-3 py-2 text-body-md text-ink hover:bg-canvas-soft-2">All calculators</a>
+      {
+        categories.map((c) => (
+          <a
+            href={`/categories/${c.slug}`}
+            class="rounded-md px-3 py-2 text-body-md text-body hover:bg-canvas-soft-2 hover:text-ink"
+          >
+            {c.name}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</header>
+
+<!-- Site-wide overlays -->
+<SearchCommand />
+<AssistantPanel />
+<AuthModal />
+
+<script>
+  import { initThemeToggle } from "../../islands/theme-toggle";
+  import { initCurrencySelect } from "../../islands/currency-select";
+  initThemeToggle();
+  initCurrencySelect();
+
+  // Mobile menu toggle
+  const btn = document.querySelector<HTMLButtonElement>("[data-menu-open]");
+  const panel = document.querySelector<HTMLElement>("[data-menu-panel]");
+  btn?.addEventListener("click", () => {
+    const open = panel?.hasAttribute("hidden");
+    if (open) panel?.removeAttribute("hidden");
+    else panel?.setAttribute("hidden", "");
+    btn.setAttribute("aria-expanded", String(!!open));
+  });
+</script>
