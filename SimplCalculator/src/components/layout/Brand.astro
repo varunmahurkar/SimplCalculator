@@ -1,0 +1,24 @@
+---
+// Wordmark + mark. The mark is an ink rounded square with an "equals" glyph —
+// the result of a calculation. Monochrome in nav per DESIGN.md.
+export interface Props {
+  class?: string;
+}
+const { class: cls = "" } = Astro.props;
+---
+
+<a
+  href="/"
+  class={`inline-flex items-center gap-2 text-ink hover:opacity-90 transition-opacity ${cls}`}
+  aria-label="Simpl Calculator home"
+>
+  <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+    <rect width="26" height="26" rx="7" fill="var(--color-primary)"></rect>
+    <path
+      d="M8 10.5h10M8 15.5h10"
+      stroke="var(--color-on-primary)"
+      stroke-width="2"
+      stroke-linecap="round"></path>
+  </svg>
+  <span class="text-display-sm font-semibold tracking-tight">Simpl</span>
+</a>
