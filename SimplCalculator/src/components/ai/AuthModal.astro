@@ -1,0 +1,99 @@
+---
+import Icon from "../ui/Icon.astro";
+import { authEnabled } from "../../lib/supabase";
+if (!authEnabled()) return null;
+---
+
+<div
+  data-auth-root
+  hidden
+  class="fixed inset-0 z-50 flex items-center justify-center bg-ink/30 px-4 backdrop-blur-sm"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Sign in"
+>
+  <div data-auth-dialog class="w-full max-w-sm overflow-hidden rounded-xl bg-canvas shadow-e5">
+    <header class="flex items-center justify-between border-b border-hairline px-5 py-4">
+      <p data-auth-title class="text-body-md-strong font-medium text-ink">Sign in</p>
+      <button data-auth-close class="flex h-8 w-8 items-center justify-center rounded-md text-mute hover:bg-canvas-soft-2 hover:text-ink" aria-label="Close">
+        <Icon path="M6 6l12 12M18 6L6 18" size={18} />
+      </button>
+    </header>
+
+    <div class="grid gap-3 px-5 py-5">
+      <!-- OAuth providers -->
+      <div class="grid gap-2">
+        <button type="button" data-oauth="google"
+          class="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-hairline bg-canvas px-3 text-body-sm font-medium text-ink hover:bg-canvas-soft-2">
+          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1A11 11 0 0 0 2.18 7.06l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38z"/></svg>
+          Continue with Google
+        </button>
+        <button type="button" data-oauth="github"
+          class="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-hairline bg-canvas px-3 text-body-sm font-medium text-ink hover:bg-canvas-soft-2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1A11 11 0 0 0 8.5 22.4c.55.1.75-.24.75-.53v-1.9c-3.06.67-3.7-1.47-3.7-1.47-.5-1.27-1.22-1.61-1.22-1.61-1-.68.08-.67.08-.67 1.1.08 1.68 1.13 1.68 1.13.98 1.68 2.57 1.2 3.2.92.1-.71.38-1.2.69-1.47-2.44-.28-5-1.22-5-5.43 0-1.2.43-2.18 1.13-2.95-.11-.28-.49-1.4.11-2.91 0 0 .92-.3 3 1.13a10.4 10.4 0 0 1 5.5 0c2.08-1.42 3-1.13 3-1.13.6 1.51.22 2.63.11 2.91.7.77 1.13 1.75 1.13 2.95 0 4.22-2.57 5.15-5.01 5.42.39.34.74 1 .74 2.03v3.01c0 .29.2.64.76.53A11 11 0 0 0 12 1z"/></svg>
+          Continue with GitHub
+        </button>
+        <button type="button" data-oauth="facebook"
+          class="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-hairline bg-canvas px-3 text-body-sm font-medium text-ink hover:bg-canvas-soft-2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#1877F2" aria-hidden="true"><path d="M24 12a12 12 0 1 0-13.88 11.85v-8.38H7.08V12h3.04V9.36c0-3 1.79-4.67 4.53-4.67 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.96.93-1.96 1.87V12h3.33l-.53 3.47h-2.8v8.38A12 12 0 0 0 24 12z"/></svg>
+          Continue with Facebook
+        </button>
+      </div>
+
+      <div class="my-1 flex items-center gap-3 text-caption text-mute">
+        <span class="h-px flex-1 bg-hairline"></span>or<span class="h-px flex-1 bg-hairline"></span>
+      </div>
+
+      <form data-auth-form class="grid gap-3">
+        <p data-auth-lead class="text-body-sm text-body">
+          Sign in to keep chatting and save your calculations.
+        </p>
+
+        <div class="grid gap-1.5">
+          <label for="auth-email" class="text-body-sm-strong font-medium text-ink">Email</label>
+          <input id="auth-email" name="email" type="email" required autocomplete="email"
+            class="h-10 rounded-sm border border-hairline bg-canvas px-3 text-body-sm text-ink outline-none focus:border-hairline-strong" />
+        </div>
+
+        <!-- Username (sign-up only) with live availability -->
+        <div data-auth-username-row hidden class="grid gap-1.5">
+          <label for="auth-username" class="text-body-sm-strong font-medium text-ink">Username</label>
+          <input id="auth-username" name="username" type="text" autocomplete="username" minlength="3" maxlength="20"
+            class="h-10 rounded-sm border border-hairline bg-canvas px-3 text-body-sm text-ink outline-none focus:border-hairline-strong" />
+          <p data-username-status class="text-caption text-mute">3–20 characters: letters, numbers, underscore.</p>
+        </div>
+
+        <div class="grid gap-1.5">
+          <label for="auth-password" class="text-body-sm-strong font-medium text-ink">Password</label>
+          <div class="relative">
+            <input id="auth-password" name="password" type="password" required minlength="6" autocomplete="current-password"
+              class="h-10 w-full rounded-sm border border-hairline bg-canvas px-3 pr-10 text-body-sm text-ink outline-none focus:border-hairline-strong" />
+            <button type="button" data-pw-toggle aria-label="Show password" aria-pressed="false"
+              class="absolute right-1 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-mute hover:bg-canvas-soft-2 hover:text-ink">
+              <span data-pw-icon-show><Icon path="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z M12 9a3 3 0 100 6 3 3 0 000-6z" size={16} /></span>
+              <span data-pw-icon-hide hidden><Icon path="M3 3l18 18 M10.6 10.6a3 3 0 004.2 4.2 M9.9 5.1A9.6 9.6 0 0112 5c6.5 0 10 7 10 7a17 17 0 01-3.2 4 M6.6 6.6A17 17 0 002 12s3.5 7 10 7a9.6 9.6 0 003-.5" size={16} /></span>
+            </button>
+          </div>
+          <button type="button" data-auth-forgot class="justify-self-start text-caption text-link hover:underline">Forgot password?</button>
+        </div>
+
+        <p data-auth-msg hidden class="text-caption"></p>
+
+        <button type="submit" data-auth-submit
+          class="mt-1 inline-flex h-10 items-center justify-center rounded-pill bg-primary px-5 text-body-sm font-medium text-on-primary hover:opacity-90">
+          Sign in
+        </button>
+
+        <p class="text-center text-caption text-body">
+          <span data-auth-switch-label>New here?</span>
+          <button type="button" data-auth-switch class="font-medium text-link hover:underline">Create an account</button>
+        </p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { initAuth } from "../../islands/auth";
+  initAuth();
+</script>

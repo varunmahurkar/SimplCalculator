@@ -1,0 +1,44 @@
+---
+import Icon from "../ui/Icon.astro";
+---
+
+<div
+  data-search-root
+  hidden
+  class="fixed inset-0 z-50 flex items-start justify-center bg-ink/30 px-4 pt-[12vh] backdrop-blur-sm"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Search calculators"
+>
+  <div
+    data-search-dialog
+    class="w-full max-w-xl overflow-hidden rounded-xl bg-canvas shadow-e5"
+  >
+    <div class="flex items-center gap-3 border-b border-hairline px-4">
+      <Icon path="M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.3-4.3" size={18} class="text-mute" />
+      <input
+        data-search-input
+        type="text"
+        placeholder="Search calculators…"
+        class="h-14 w-full bg-transparent text-body-md text-ink outline-none placeholder:text-mute"
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="Search calculators"
+      />
+      <button
+        data-search-close
+        class="rounded border border-hairline bg-canvas-soft px-1.5 py-0.5 font-mono text-caption text-mute hover:text-ink"
+        aria-label="Close search">esc</button
+      >
+    </div>
+    <div data-search-results role="listbox" class="max-h-[50vh] overflow-y-auto p-2"></div>
+    <p data-search-empty hidden class="px-4 py-8 text-center text-body-sm text-mute">
+      No calculators match your search.
+    </p>
+  </div>
+</div>
+
+<script>
+  import { initSearchCommand } from "../../islands/search-command";
+  initSearchCommand();
+</script>
