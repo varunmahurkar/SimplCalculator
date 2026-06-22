@@ -1,0 +1,21 @@
+---
+// Small inline metadata pill (DESIGN.md badge-secondary / banner-marketing).
+export interface Props {
+  tone?: "neutral" | "info" | "success" | "warning" | "mono";
+  class?: string;
+}
+const { tone = "neutral", class: cls = "" } = Astro.props;
+const tones = {
+  neutral: "bg-canvas-soft text-body",
+  info: "bg-link-bg-soft text-link-deep",
+  success: "bg-cyan-soft text-cyan-deep",
+  warning: "bg-warning-soft text-warning-deep",
+  mono: "bg-canvas-soft text-body font-mono uppercase tracking-wide",
+};
+---
+
+<span
+  class={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-caption ${tones[tone]} ${cls}`}
+>
+  <slot />
+</span>

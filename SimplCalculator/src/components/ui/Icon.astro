@@ -1,0 +1,25 @@
+---
+// Renders a stroked icon from 24x24 viewBox path data.
+export interface Props {
+  path: string;
+  size?: number;
+  class?: string;
+  "stroke-width"?: number;
+}
+const { path, size = 20, class: cls = "", "stroke-width": sw = 1.75 } = Astro.props;
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={sw}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={cls}
+  aria-hidden="true"
+>
+  <path d={path}></path>
+</svg>
