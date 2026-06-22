@@ -1,0 +1,46 @@
+---
+// Surface card following DESIGN.md card chrome + stacked-shadow elevation.
+export interface Props {
+  elevation?: 1 | 2 | 3 | 4 | 5;
+  surface?: "canvas" | "soft" | "soft-2";
+  radius?: "md" | "lg" | "xl";
+  padding?: "sm" | "md" | "lg" | "xl";
+  href?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+const {
+  elevation = 2,
+  surface = "canvas",
+  radius = "md",
+  padding = "lg",
+  href,
+  class: cls = "",
+  ...rest
+} = Astro.props;
+
+const surfaces = {
+  canvas: "bg-canvas",
+  soft: "bg-canvas-soft",
+  "soft-2": "bg-canvas-soft-2",
+};
+const radii = { md: "rounded-md", lg: "rounded-lg", xl: "rounded-xl" };
+const pads = { sm: "p-3", md: "p-4", lg: "p-6", xl: "p-8" };
+const shadows = {
+  1: "shadow-e1",
+  2: "shadow-e2",
+  3: "shadow-e3",
+  4: "shadow-e4",
+  5: "shadow-e5",
+};
+
+const interactive = href
+  ? "transition-shadow duration-150 hover:shadow-e4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-link"
+  : "";
+const className = `block ${surfaces[surface]} ${radii[radius]} ${pads[padding]} ${shadows[elevation]} ${interactive} ${cls}`;
+const Tag = href ? "a" : "div";
+---
+
+<Tag class={className} {...href ? { href } : {}} {...rest}>
+  <slot />
+</Tag>

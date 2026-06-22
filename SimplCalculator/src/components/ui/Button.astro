@@ -1,0 +1,55 @@
+---
+// Pill / square button following DESIGN.md button tokens.
+// variants: primary (ink pill), secondary (white pill), ghost, nav-signup, nav-ghost
+export interface Props {
+  variant?: "primary" | "secondary" | "ghost" | "nav-signup" | "nav-ghost";
+  size?: "sm" | "md" | "lg";
+  href?: string;
+  type?: "button" | "submit" | "reset";
+  class?: string;
+  id?: string;
+  [key: string]: unknown;
+}
+
+const {
+  variant = "primary",
+  size = "md",
+  href,
+  type = "button",
+  class: cls = "",
+  ...rest
+} = Astro.props;
+
+const base =
+  "inline-flex items-center justify-center gap-2 font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-link focus-visible:ring-offset-2 focus-visible:ring-offset-canvas disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap select-none";
+
+const sizes: Record<string, string> = {
+  sm: "h-8 px-3 text-body-sm",
+  md: "h-10 px-5 text-button-md",
+  lg: "h-12 px-6 text-button-lg",
+};
+
+const variants: Record<string, string> = {
+  primary: "bg-primary text-on-primary rounded-pill hover:opacity-90",
+  secondary:
+    "bg-canvas text-ink rounded-pill border border-hairline hover:bg-canvas-soft-2",
+  ghost: "bg-transparent text-body rounded-full hover:bg-canvas-soft-2 hover:text-ink",
+  "nav-signup":
+    "h-7 px-3 bg-primary text-on-primary rounded-sm text-body-sm font-medium hover:opacity-90",
+  "nav-ghost":
+    "h-7 px-3 bg-canvas text-ink rounded-sm text-body-sm font-medium border border-hairline hover:bg-canvas-soft-2",
+};
+
+const textSize =
+  variant === "nav-signup" || variant === "nav-ghost" ? "" : sizes[size];
+const className = `${base} ${textSize} ${variants[variant]} ${cls}`;
+const Tag = href ? "a" : "button";
+---
+
+<Tag
+  class={className}
+  {...href ? { href } : { type }}
+  {...rest}
+>
+  <slot />
+</Tag>
