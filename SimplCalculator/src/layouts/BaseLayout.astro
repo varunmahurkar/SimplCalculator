@@ -1,0 +1,132 @@
+---
+import "../styles/global.css";
+import Nav from "../components/layout/Nav.astro";
+import Footer from "../components/layout/Footer.astro";
+
+export interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogImage?: string;
+  /** JSON-LD structured data objects to embed. */
+  jsonLd?: Record<string, unknown>[];
+  /** Hide the global chrome (nav/footer) — used for print/report views. */
+  bare?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  ogImage = "/og-default.svg",
+  jsonLd = [],
+  bare = false,
+} = Astro.props;
+
+const siteName = "Simpl Calculator";
+const canonicalURL = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
+const fullTitle = title.includes(siteName) ? title : `${title} · ${siteName}`;
+const adsenseClient = import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Preload primary font weight for fast first paint -->
+    <link
+      rel="preload"
+      href="/fonts/Geist-Variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <!-- OpenGraph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site).href} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.site).href} />
+
+    {
+      jsonLd.map((schema) => (
+        <script
+          type="application/ld+json"
+          set:html={JSON.stringify(schema)}
+        />
+      ))
+    }
+
+    {
+      adsenseClient && (
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
+          crossorigin="anonymous"
+        />
+      )
+    }
+
+    <!-- Theme pre-paint: set data-theme before first paint to avoid FOUC -->
+    <script is:inline>
+      (() => {
+        try {
+          const stored = localStorage.getItem("theme") || "system";
+          const prefersDark = window.matchMedia(
+            "(prefers-color-scheme: dark)",
+          ).matches;
+          const dark = stored === "dark" || (stored === "system" && prefersDark);
+          document.documentElement.dataset.theme = dark ? "dark" : "light";
+        } catch (_) {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-body-sm focus:text-on-primary"
+      >Skip to content</a
+    >
+    {!bare && <Nav />}
+    <main id="main" class="overflow-x-clip">
+      <slot />
+    </main>
+    {!bare && <Footer />}
+
+    <!-- Expand all <details> for printing (report/PDF), then restore. -->
+    <script is:inline>
+      (() => {
+        let toReopen = [];
+        window.addEventListener("beforeprint", () => {
+          toReopen = [];
+          document.querySelectorAll("details:not([open])").forEach((d) => {
+            d.setAttribute("open", "");
+            toReopen.push(d);
+          });
+        });
+        window.addEventListener("afterprint", () => {
+          toReopen.forEach((d) => d.removeAttribute("open"));
+          toReopen = [];
+        });
+      })();
+    </script>
+  </body>
+</html>
